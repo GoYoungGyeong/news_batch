@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.tmon.batch.news.dao.NewsMapper">
+	<resultMap type="News" id="NewsResult">
+		<id property="newsID" column="id" />
+		<result property="newsTitle" column="title" />
+		<result property="newsPreview" column="preview" />
+		<result property="newsDate" column="date" />
+		<result property="newsImage" column="image" />
+		<result property="newsLink" column="link" />
+		<result property="newsProvider" column="provider" />
+		<result property="newsCount" column="readcnt" />
+		<result property="newsSocialCorpCode" column="social_corpcode" />
+		<result property="similarNews" column="similarnews" />
+	</resultMap>
+	
+	<resultMap type="CountSocialNews" id="CountSocialNews">
+		<result property="date" column="date" />
+		<result property="socialCorpCode" column="corp_code" />
+		<result property="newsCount" column="count" />
+	</resultMap>
+
+	<select id="getNewsList" resultMap="NewsResult">
+		SELECT 
+			news.id, 
+			news.title, 
+			news.preview, 
+			news.date, 
+			news.image, 
+			news.link, 
+			news.provider, 
+			news.readcnt,
+			news.similarnews,
+			mapping_social.social_corpcode
+		FROM 
+			news
+		INNER JOIN 
+			mapping_social ON news.id = mapping_social.news_id
+		INNER JOIN 
+			social_corporations ON mapping_social.social_corpcode = social_corporations.code
+		WHERE
+			social_corporations.code=#{corpCode} AND
+			date=#{newsDate}
+		ORDER BY 
+			news.readcnt DESC,
+			news.id ASC
+		LIMIT
+			#{page}, 5
+	</select>
+
+	<select id="getNewsListByAllCorp" resultMap="NewsResult">
+		SELECT 
+			news.id, 
+			news.title, 
+			news.preview, 
+			news.date, 
+			news.image, 
+			news.link, 
+			news.provider, 
+			news.readcnt,
+			news.similarnews,
+			mapping_social.social_corpcode
+		FROM 
+			news 
+		INNER JOIN 
+			mapping_social ON news.id = mapping_social.news_id
+		INNER JOIN 
+			social_corporations ON mapping_social.social_corpcode =social_corporations.code
+		WHERE
+			date=#{newsDate}
+			AND
+				(social_corporations.code = "tm" 
+				OR social_corporations.code = "wmp" 
+				OR social_corporations.code = "cp")
+		GROUP BY 
+		news.id
+		ORDER BY
+			news.readcnt DESC,
+			news.id ASC,
+			CASE 
+				WHEN 
+					CODE = "tm" THEN 1
+				WHEN
+					CODE = "cp" THEN 2
+				WHEN 
+					CODE = "wmp" THEN 3
+		END ASC
+		LIMIT
+		#{page}, 5
+	</select>
+	
+	<select id="getNewsListForDailyNumberOfNews" resultMap="NewsResult">
+		SELECT 
+			news.id, 
+			mapping_social.social_corpcode
+		FROM 
+			news
+		INNER JOIN 
+			mapping_social ON news.id = mapping_social.news_id
+		INNER JOIN 
+			social_corporations ON mapping_social.social_corpcode = social_corporations.code
+		WHERE
+			social_corporations.code=#{corpCode} AND date=#{date}
+	</select>
+
+	<select id="getNewsListByAllCorpForDailyNumberOfNews" resultMap="NewsResult">
+		SELECT 
+			news.id, 
+			mapping_social.social_corpcode
+		FROM 
+			news 
+		INNER JOIN 
+			mapping_social ON news.id = mapping_social.news_id
+		INNER JOIN 
+			social_corporations ON mapping_social.social_corpcode = social_corporations.code
+		WHERE
+			date=#{newsDate}
+			AND
+				(social_corporations.code = "tm" 
+				OR social_corporations.code = "wmp" 
+				OR social_corporations.code = "cp")
+		GROUP BY 
+			news.id
+		ORDER BY
+			CASE 
+				WHEN 
+					CODE = "tm" THEN 1
+				WHEN 
+					CODE = "cp" THEN 2
+				WHEN 
+					CODE = "wmp" THEN 3
+		END ASC
+	</select>
+
+	<insert id="insertNews" parameterType="News">
+	INSERT INTO 
+		news(id, title, preview, DATE, image, link, provider, similarnews, readcnt)
+	VALUES
+		(#{newsID}, #{newsTitle}, #{newsPreview}, #{newsDate}, #{newsImage}, #{newsLink}, #{newsProvider}, #{similarNews}, 0)
+	ON DUPLICATE KEY
+		UPDATE similarnews = #{similarNews}
+			
+	</insert>
+
+	<insert id="mappingSocialCode" parameterType="News">
+		INSERT INTO
+			mapping_social(social_corpcode, news_id)
+		SELECT
+			#{newsSocialCorpCode}, #{newsID}
+		FROM DUAL
+			WHERE
+				NOT EXISTS
+					(SELECT social_corpcode, news_id FROM mapping_social WHERE social_corpcode=#{newsSocialCorpCode} AND news_id=#{newsID})
+			
+	</insert>
+	
+	<update id="readCountUpdate" parameterType="int">
+		UPDATE 
+			news 
+		SET 
+			readcnt=readcnt+1
+		WHERE 
+			id=#{newsID};
+	</update>
+
+	<select id="selectTodayNewsCountForInsert" resultType="int">
+		SELECT
+			IFNULL(SUM(similarnews)+COUNT(news_id) , 0) AS count
+		FROM 
+			mapping_social mapping, news news
+		WHERE
+		mapping.news_id = news.id AND
+		mapping.social_corpCode = #{socialCorpCode} and news.date = #{today}
+	</select>
+	<insert id="insertNewsCount" parameterType="countSocialNews">
+		INSERT INTO
+		NEWS_COUNT(DATE, corp_code, COUNT)
+		SELECT #{date}, #{socialCorpCode}, #{newsCount}
+		FROM DUAL
+			WHERE
+				NOT EXISTS
+					(SELECT news_count.date, news_count.corp_code FROM news_count WHERE news_count.date=#{date} and news_count.corp_code=#{socialCorpCode})
+		
+	</insert>
+	<select id="selectNewsCount" resultType="CountSocialNews">
+		SELECT date AS date, corp_code AS socialCorpCode, count AS newsCount
+		FROM news_count
+		WHERE date = #{date}
+	</select>
+
+</mapper>
