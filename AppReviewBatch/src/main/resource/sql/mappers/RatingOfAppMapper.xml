@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="kr.co.tmon.batch.appreview.dao.RatingOfAppMapper">
+	<resultMap type="RatingOfAppModel" id="RatingOfAppResult">
+		<result property="tmonRating" column="tmon_rating" />
+		<result property="tmonplusRating" column="tmonplus_rating" />
+		<result property="coupangRating" column="coupang_rating" />
+		<result property="wemapRating" column="wemap_rating" />
+	</resultMap>
+	
+	<update id="updateRatingOfApp" parameterType="RatingOfAppModel">
+		UPDATE
+			rating_of_app
+		SET 
+			coupang_rating=#{coupangRating}, 
+			wemap_rating=#{wemapRating}, 
+			tmon_rating=#{tmonRating}, 
+			tmonplus_rating = #{tmonplusRating}
+	</update>
+	
+	<select id="selectRatingOfApp" resultMap="RatingOfAppResult">
+		SELECT
+			tmonRating, coupangRating, wemapRating, tmonplusRating
+		FROM
+			rating_of_app
+	</select>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="kr.co.tmon.batch.appreview.dao.MonthlyAppRatingMapper">
+	<resultMap type="MonthlyAppRatingModel" id="MonthlyAppRatingResult">
+		<result property="reviewedMonth" column="review_month" />
+		<result property="coupangRating" column="coupang_rating" />
+		<result property="wemapRating" column="wemap_rating" />
+		<result property="tmonRating" column="tmon_rating" />
+	</resultMap>
+	
+	<insert id="insertMonthlyAppRating" parameterType="MonthlyAppRatingModel">
+		INSERT INTO
+			monthly_rating_as_app(review_month, coupang_rating, wemap_rating, tmon_rating)
+		VALUES
+			(#{reviewedMonth}, #{coupangRating}, #{wemapRating}, #{tmonRating})
+		ON DUPLICATE KEY UPDATE coupang_rating=#{coupangRating}, wemap_rating=#{wemapRating}, tmon_rating=#{tmonRating}
+	</insert>
+	
+	<select id="selectMonthlyAppRating" resultMap="MonthlyAppRatingResult">
+		SELECT
+			review_month, coupang_rating, wemap_rating, tmon_rating
+		FROM
+			monthly_rating_as_app
+		ORDER BY
+			review_month DESC
+		LIMIT
+			5
+	</select>
+</mapper>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.tmon.batch.appreview.dao.AppReviewMapper">
+	<resultMap type="AppReviewModel" id="AppReviewResult">
+		<result property="reviewTitle" column="title" />
+		<result property="reviewContext" column="content" />
+		<result property="writtenDate" column="date" />
+		<result property="reviewLink" column="link" />
+		<result property="reviewerLink" column="user.user_link" />
+		<result property="appVersion" column="app_version" />
+		<result property="corpCode" column="social_corpcode" />
+		<result property="rating" column="rating" />
+		<result property="reviewerID" column="user.name" />
+		<result property="userID" column="user.id" />
+		<result property="appName" column="app_name"/>
+	</resultMap>
+	
+	<resultMap type="RatingOfAppByVersionModel" id="RatingOfAppByVersionResult">
+		<result property="ratingOne" column="rating_one" />
+		<result property="ratingTwo" column="rating_two" />
+		<result property="ratingThree" column="rating_three" />
+		<result property="ratingFour" column="rating_four" />
+		<result property="ratingFive" column="rating_five" />
+		<result property="appName" column="app_name" />
+		<result property="appVersion" column="app_version" />
+		<result property="averageRating" column="average_rating" />
+	</resultMap>
+	
+	<resultMap type="NumberOfAppReviewModel" id="NumberOfAppReviewResult">
+		<result property="monthString" column="month" />
+		<result property="numberOfCoupangAppReview" column="coupang" />
+		<result property="numberOfTmonAppReview" column="tmon" />
+		<result property="numberOfWemapAppReview" column="wemap" />
+		<result property="numberOfTmonplusAppReview" column="tmonplus" />
+	</resultMap>
+	
+	<resultMap type="MonthlyAppRatingModel" id="MonthlyAppRatingResult">
+		<result property="reviewedMonth" column="review_month" />
+		<result property="coupangRating" column="coupang_rating" />
+		<result property="wemapRating" column="wemap_rating" />
+		<result property="tmonRating" column="tmon_rating" />
+	</resultMap>
+	
+	<select id="selectAppReview" resultMap="AppReviewResult">
+		SELECT
+			review.title,
+			review.content,
+			review.date,
+			review.link,
+			review.app_version,
+			review.social_corpcode,
+			review.rating,
+			review.app_name,
+			user.user_link,
+			user.id,
+			user.name
+		FROM
+			user
+				INNER JOIN
+					review 
+					ON 
+						user.id = review.user_id
+		WHERE
+			review.app_name = #{appName}
+		ORDER BY
+			review.date DESC
+		LIMIT
+			#{numberOfLoad}, 20
+	</select>
+	
+	<insert id="insertAppReviewToUserTable">
+		INSERT INTO 
+			user(user_link, name)
+		SELECT
+			#{reviewerLink}, #{reviewerID}
+		FROM DUAL
+			WHERE
+				NOT EXISTS
+					(SELECT user_link FROM user WHERE user_link = #{reviewerLink})
+	</insert>
+	
+	<insert id="insertAppReviewToReviewTable">
+		 <selectKey keyProperty="userID" resultType="int" order="BEFORE">
+    		SELECT
+    			user.id
+    		FROM
+    			user
+    		WHERE
+    			user_link = #{reviewerLink}
+ 		 </selectKey>
+ 		 
+ 		 INSERT INTO
+ 		 	review(rating, title, content, date, app_name, app_version, link, user_id, social_corpcode)
+ 		 SELECT
+ 		 	#{rating}, #{reviewTitle}, #{reviewContext}, #{writtenDate}, #{appName}, #{appVersion}, #{reviewLink}, #{userID}, #{corpCode}
+ 		 FROM DUAL
+ 		 	WHERE
+ 		 		NOT EXISTS
+ 		 			(SELECT review.link FROM review WHERE review.link=#{reviewLink})
+	</insert>
+	
+	<select id="selectReviewForRatingByVersion" resultMap="RatingOfAppByVersionResult">
+		SELECT
+			COUNT(IF(rating=1, rating, NULL)) AS rating_one, 
+			COUNT(IF(rating=2, rating, NULL)) AS rating_two, 
+			COUNT(IF(rating=3, rating, NULL)) AS rating_three, 
+			COUNT(IF(rating=4, rating, NULL)) AS rating_four, 
+			COUNT(IF(rating=5, rating, NULL)) AS rating_five, 
+			AVG(rating) AS average_rating, 
+			app_name, 
+			app_version
+		FROM
+			review
+		WHERE
+			app_name=#{appName}
+		GROUP BY
+			app_version
+	</select>
+	
+	<select id="selectNumberOfAppReview" resultMap="NumberOfAppReviewResult">
+		SELECT
+			COUNT(IF(app_name="티몬", app_name, NULL)) AS tmon,
+			COUNT(IF(app_name="티몬플러스", app_name, NULL)) AS tmonplus,
+			COUNT(IF(app_name="쿠팡", app_name, NULL)) AS coupang,
+			COUNT(IF(app_name="위메프", app_name, NULL)) AS wemap
+			
+		FROM
+			review
+		WHERE
+		<![CDATA[
+			DATE >= #{startDate} AND DATE <= #{endDate}
+			]]>
+	</select>
+	
+	<select id="selectMonthlyAppRating" resultMap="MonthlyAppRatingResult">
+		SELECT
+			AVG(IF(app_name="티몬", rating, NULL)) AS tmon_rating,
+			AVG(IF(app_name="위메프", rating, NULL)) AS wemap_rating,
+			AVG(IF(app_name="쿠팡", rating, NULL)) AS coupang_rating
+			
+		FROM
+			review
+		WHERE
+		<![CDATA[
+			DATE >= #{startDate} AND DATE <= #{endDate}
+			]]>
+	</select>
+	
+</mapper>

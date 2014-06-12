@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.tmon.batch.appreview.dao.RatingOfAppByVersionMapper">
+	<resultMap type="RatingOfAppByVersionModel" id="RatingOfAppByVersionResult">
+		<result property="ratingOne" column="rating_one" />
+		<result property="ratingTwo" column="rating_two" />
+		<result property="ratingThree" column="rating_three" />
+		<result property="ratingFour" column="rating_four" />
+		<result property="ratingFive" column="rating_five" />
+		<result property="appName" column="app_name" />
+		<result property="appVersion" column="app_version" />
+		<result property="averageRating" column="average_rating" />
+	</resultMap>
+
+	<insert id="insertRatingOfAppByVersion" parameterType="RatingOfAppByVersionModel">
+		INSERT INTO
+			rating_by_version(rating_one, rating_two, rating_three, rating_four, rating_five, app_name, app_version, average_rating)
+		VALUES
+			(#{ratingOne}, #{ratingTwo}, #{ratingThree}, #{ratingFour}, #{ratingFive}, #{appName}, #{appVersion}, #{averageRating})
+		ON DUPLICATE KEY
+		UPDATE
+			rating_one=#{ratingOne}, rating_two=#{ratingTwo}, rating_three=#{ratingThree}, rating_four=#{ratingFour}, rating_five=#{ratingFive}, average_rating=#{averageRating}
+	</insert>
+	
+	<select id="selectLastestFiveVersionRating" resultMap="RatingOfAppByVersionResult">
+		SELECT
+			rating_one, rating_two, rating_three, rating_four, rating_five, app_name, app_version, average_rating
+		FROM
+			rating_by_version
+		WHERE
+			app_name = #{appName}
+		ORDER BY
+			app_version DESC
+		LIMIT
+			5
+	</select>
+
+</mapper>
