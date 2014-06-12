@@ -26,10 +26,10 @@ public class RatingOfAppVersionBO {
 
 	@Autowired
 	private RatingOfAppByVersionDAO ratingOfAppByVersionDAO;
-	
+
 	@Autowired
 	private AppReviewDAO appReviewDAO;
-	
+
 	@Scheduled(fixedDelay = 86400000)
 	public void insertAppRatingData() {
 		List<RatingOfAppByVersionModel> coupangRatingList = appReviewDAO.selectAppRatingByVersion(APP_NAME_OF_COUPANG);
@@ -42,16 +42,18 @@ public class RatingOfAppVersionBO {
 		insertRatingByVersion(tmonRatingList);
 		insertRatingByVersion(tmonplusRatingList);
 	}
-	
+
 	private void insertRatingByVersion(List<RatingOfAppByVersionModel> ratingList) {
-		for (RatingOfAppByVersionModel ratingOfAppByVersion : ratingList) {
-			SubDecimal subDecimal = new SubDecimal();
-			alterCharacterOldVersion(ratingOfAppByVersion);
-			ratingOfAppByVersion.setAverageRating((subDecimal.subDecimalFromOriginalFloat(ratingOfAppByVersion.getAverageRating())));
-			ratingOfAppByVersionDAO.insertRatingOfAppByVersion(ratingOfAppByVersion);
+		if (ratingList.size() > 0) {
+			for (RatingOfAppByVersionModel ratingOfAppByVersion : ratingList) {
+				SubDecimal subDecimal = new SubDecimal();
+				alterCharacterOldVersion(ratingOfAppByVersion);
+				ratingOfAppByVersion.setAverageRating((subDecimal.subDecimalFromOriginalFloat(ratingOfAppByVersion.getAverageRating())));
+				ratingOfAppByVersionDAO.insertRatingOfAppByVersion(ratingOfAppByVersion);
+			}
 		}
 	}
-	
+
 	private void alterCharacterOldVersion(RatingOfAppByVersionModel ratingOfVersion) {
 		if (ratingOfVersion.getAppVersion().contains("old_") == true) {
 			StringBuilder stringBuilder = new StringBuilder();

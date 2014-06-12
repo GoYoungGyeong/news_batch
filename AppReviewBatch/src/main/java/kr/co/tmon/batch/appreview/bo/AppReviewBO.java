@@ -22,12 +22,18 @@ import org.springframework.stereotype.Service;
 public class AppReviewBO {
 	@Autowired
 	private AppReviewDAO appReviewDAO;
-	
+
 	@Scheduled(fixedDelay = 86400000)
 	public void insertLastestReview() throws IOException, ParseException, java.text.ParseException {
 		ExtractFromJson extractFromJson = new ExtractFromJson();
 		List<AppReviewModel> lastestReviewData = extractFromJson.getAppReviewListAmongLastestWeek();
-		for (AppReviewModel review : lastestReviewData)
-			appReviewDAO.insertAppReview(review);
+		reviewInsertion(lastestReviewData);
+	}
+
+	private void reviewInsertion(List<AppReviewModel> lastestReviewData) {
+		if (lastestReviewData.size() > 0) {
+			for (AppReviewModel review : lastestReviewData)
+				appReviewDAO.insertAppReview(review);
+		}
 	}
 }

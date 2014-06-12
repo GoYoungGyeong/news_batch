@@ -27,7 +27,7 @@ public class MonthlyAppRatingBO {
 
 	@Autowired
 	private AppReviewDAO appReviewDAO;
-	
+
 	@Scheduled(fixedDelay = 86400000)
 	public void insertCurrentMonthAppRating() throws ParseException {
 		SubstringForYearPlusMonth substringForYearPlusMonth = new SubstringForYearPlusMonth();
@@ -37,10 +37,17 @@ public class MonthlyAppRatingBO {
 		Date endDate = monthStringToSpecificDate.getLastDayOfMonthForDateType(monthString);
 
 		MonthlyAppRatingModel monthlyAppRating = appReviewDAO.selectMonthlyAppRating(monthString, startDate, endDate);
-		monthlyAppRating = subDemicalOfRating(monthlyAppRating);
-		monthlyAppRatingDAO.insertMonthlyAppRating(monthlyAppRating);
+
+		monthlyDataInsertion(monthlyAppRating);
 	}
-	
+
+	private void monthlyDataInsertion(MonthlyAppRatingModel monthlyAppRating) {
+		if (monthlyAppRating != null) {
+			monthlyAppRating = subDemicalOfRating(monthlyAppRating);
+			monthlyAppRatingDAO.insertMonthlyAppRating(monthlyAppRating);
+		}
+	}
+
 	private MonthlyAppRatingModel subDemicalOfRating(MonthlyAppRatingModel monthlyAppRating) {
 		SubDecimal subDecimal = new SubDecimal();
 

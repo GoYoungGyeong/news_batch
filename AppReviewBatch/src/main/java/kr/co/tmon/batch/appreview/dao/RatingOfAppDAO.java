@@ -16,8 +16,4 @@ public class RatingOfAppDAO {
 		ratingOfAppMapper.updateRatingOfApp(ratingOfAppModel);
 	}
 
-	public RatingOfAppModel selectRatingOfApp() {
-		RatingOfAppMapper ratingOfAppMapper = sqlSession.getMapper(RatingOfAppMapper.class);
-		return ratingOfAppMapper.selectRatingOfApp();
-	}
 }
