@@ -178,11 +178,8 @@
 	<insert id="insertNewsCount" parameterType="countSocialNews">
 		INSERT INTO
 		NEWS_COUNT(DATE, corp_code, COUNT)
-		SELECT #{date}, #{socialCorpCode}, #{newsCount}
-		FROM DUAL
-			WHERE
-				NOT EXISTS
-					(SELECT news_count.date, news_count.corp_code FROM news_count WHERE news_count.date=#{date} and news_count.corp_code=#{socialCorpCode})
+		VALUES( #{date}, #{socialCorpCode}, #{newsCount})
+		ON DUPLICATE KEY UPDATE corp_code = #{socialCorpCode}, count = #{newsCount}
 		
 	</insert>
 	<select id="selectNewsCount" resultType="CountSocialNews">
