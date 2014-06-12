@@ -28,7 +28,7 @@ public class LocalInsertNewsDAO {
 		NewsMapper newsMapper = sqlSession.getMapper(NewsMapper.class);
 
 		parsedNewsList = convertingCorpCode(parsedNewsList);
-
+		
 		newsMapper.insertNews(parsedNewsList.get(0));
 		insertNewsAsUnique(parsedNewsList, newsMapper);
 

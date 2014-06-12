@@ -19,7 +19,7 @@ public class RecordTodayNewsBO {
 	@Autowired
 	private RecordTodayNewsDAO recordTodayNewsDAO;
 	
-	@Scheduled(fixedDelay = 14400000)
+	@Scheduled(fixedDelay = 12600000)
 	public void recordTodayNewsCount() {
 		CountSocialNews countTmonNews = makeCountSocialNews("tm");
 		CountSocialNews countCoupangNews = makeCountSocialNews("cp");

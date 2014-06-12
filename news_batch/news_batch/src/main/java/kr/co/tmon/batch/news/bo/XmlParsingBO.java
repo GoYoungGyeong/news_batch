@@ -33,6 +33,7 @@ public class XmlParsingBO {
 		NewsModelConvertAdapter newsModelConvertAdapter = new NewsModelConvertAdapter();
 		List<ParsedNews> parsedNewsList = remoteGetNewsDAO.getSocialNewsDocument().getParsedNewsList();
 		List<News> newsList = newsModelConvertAdapter.convertToNewsListForDB(parsedNewsList);
-		localInsertNewsDAO.insertNews(newsList);
+		if(newsList.size() > 0)
+			localInsertNewsDAO.insertNews(newsList);
 	}
 }
