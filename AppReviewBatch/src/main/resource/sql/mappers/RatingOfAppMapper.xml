@@ -23,7 +23,7 @@
 	
 	<select id="selectRatingOfApp" resultMap="RatingOfAppResult">
 		SELECT
-			tmonRating, coupangRating, wemapRating, tmonplusRating
+			tmon_rating, coupang_rating, wemap_rating, tmonplus_rating
 		FROM
 			rating_of_app
 	</select>

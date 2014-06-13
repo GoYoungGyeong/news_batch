@@ -9,12 +9,12 @@
 		<result property="reviewContext" column="content" />
 		<result property="writtenDate" column="date" />
 		<result property="reviewLink" column="link" />
-		<result property="reviewerLink" column="user.user_link" />
+		<result property="reviewerLink" column="user_link" />
 		<result property="appVersion" column="app_version" />
 		<result property="corpCode" column="social_corpcode" />
 		<result property="rating" column="rating" />
-		<result property="reviewerID" column="user.name" />
-		<result property="userID" column="user.id" />
+		<result property="reviewerID" column="name" />
+		<result property="userID" column="id" />
 		<result property="appName" column="app_name"/>
 	</resultMap>
 	
