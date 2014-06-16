@@ -11,6 +11,16 @@ public class RatingOfAppDAO {
 	@Autowired
 	private SqlSession sqlSession;
 
+	public RatingOfAppModel selectRatingOfApp() {
+		RatingOfAppMapper ratingOfAppMapper = sqlSession.getMapper(RatingOfAppMapper.class);
+		return ratingOfAppMapper.selectRatingOfApp();
+	}
+
+	public void insertRatingOfApp(RatingOfAppModel ratingOfApp) {
+		RatingOfAppMapper ratingOfAppMapper = sqlSession.getMapper(RatingOfAppMapper.class);
+		ratingOfAppMapper.insertRatingOfApp(ratingOfApp);
+	}
+
 	public void updateRatingOfApp(RatingOfAppModel ratingOfAppModel) {
 		RatingOfAppMapper ratingOfAppMapper = sqlSession.getMapper(RatingOfAppMapper.class);
 		ratingOfAppMapper.updateRatingOfApp(ratingOfAppModel);

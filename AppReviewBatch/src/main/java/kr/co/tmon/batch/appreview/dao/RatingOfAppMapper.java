@@ -9,6 +9,7 @@ import kr.co.tmon.batch.appreview.model.RatingOfAppModel;
  */
 
 public interface RatingOfAppMapper {
+	void insertRatingOfApp(RatingOfAppModel ratingOfApp);
 	void updateRatingOfApp(RatingOfAppModel ratingOfAppModel);
 	RatingOfAppModel selectRatingOfApp();
 }

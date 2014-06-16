@@ -11,6 +11,14 @@
 		<result property="wemapRating" column="wemap_rating" />
 	</resultMap>
 	
+	<insert id="insertRatingOfApp" parameterType="RatingOfAppModel">
+	INSERT INTO
+		rating_of_app(coupang_rating, wemap_rating, tmon_rating, tmonplus_rating)
+	VALUES
+		(#{coupangRating}, #{wemapRating}, #{tmonRating}, #{tmonplusRating})
+	
+	</insert>
+	
 	<update id="updateRatingOfApp" parameterType="RatingOfAppModel">
 		UPDATE
 			rating_of_app

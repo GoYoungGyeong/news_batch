@@ -20,7 +20,9 @@ public class RatingOfAppBO {
 	public void updateRatingOfApp() throws IOException, ParseException {
 		ExtractFromJson extractFromJson = new ExtractFromJson();
 		RatingOfAppModel ratingOfApp = extractFromJson.getRatingOfApp();
-		if (ratingOfApp != null)
+		if (ratingOfApp != null && ratingOfAppDAO.selectRatingOfApp() != null)
 			ratingOfAppDAO.updateRatingOfApp(ratingOfApp);
+		else if (ratingOfApp != null && ratingOfAppDAO.selectRatingOfApp() == null)
+			ratingOfAppDAO.insertRatingOfApp(ratingOfApp);
 	}
 }
