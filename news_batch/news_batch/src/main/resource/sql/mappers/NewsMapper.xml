@@ -46,6 +46,7 @@
 			date=#{newsDate}
 		ORDER BY 
 			news.readcnt DESC,
+			news.similarnews DESC,
 			news.id ASC
 		LIMIT
 			#{page}, 5
@@ -79,6 +80,7 @@
 		news.id
 		ORDER BY
 			news.readcnt DESC,
+			news.similarnews DESC,
 			news.id ASC,
 			CASE 
 				WHEN 
@@ -141,7 +143,7 @@
 	VALUES
 		(#{newsID}, #{newsTitle}, #{newsPreview}, #{newsDate}, #{newsImage}, #{newsLink}, #{newsProvider}, #{similarNews}, 0)
 	ON DUPLICATE KEY
-		UPDATE similarnews = #{similarNews}
+		UPDATE similarnews = #{similarNews}, provider=#{newsProvider}
 			
 	</insert>
 

@@ -2,10 +2,9 @@ package kr.co.tmon.batch.appreview.util;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
 import java.io.IOException;
 
-import kr.co.tmon.batch.appreview.model.AppReviewModel;
+import kr.co.tmon.batch.appreview.model.AppRankingModel;
 import kr.co.tmon.batch.appreview.model.RatingOfAppModel;
 
 import org.json.simple.parser.ParseException;
@@ -33,6 +32,12 @@ public class ExtractFromJsonTest {
 	@Test
 	public void rating모델을_정상적으로_받아오는지_테스트() throws IOException, ParseException {
 		RatingOfAppModel result = extractAppReviewListFromJson.getRatingOfApp();
+		assertNotNull(result);
+	}
+
+	@Test
+	public void 앱_순위를_정상적으로_받아오는지_테스트() throws IOException, ParseException {
+		AppRankingModel result = extractAppReviewListFromJson.getAppRanking();
 		assertNotNull(result);
 	}
 }

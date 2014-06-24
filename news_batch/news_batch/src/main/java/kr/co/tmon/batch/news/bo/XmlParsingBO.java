@@ -11,6 +11,7 @@ import kr.co.tmon.batch.news.dao.RemoteGetNewsDAO;
 import kr.co.tmon.batch.news.model.News;
 import kr.co.tmon.batch.news.model.ParsedNews;
 import kr.co.tmon.batch.news.util.NewsModelConvertAdapter;
+import kr.co.tmon.batch.news.util.ReorderList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,8 +32,10 @@ public class XmlParsingBO {
 	@Scheduled(fixedDelay = 10800000)
 	public void insertParsingNewsData() throws ParseException, MalformedURLException, JAXBException {
 		NewsModelConvertAdapter newsModelConvertAdapter = new NewsModelConvertAdapter();
+		
 		List<ParsedNews> parsedNewsList = remoteGetNewsDAO.getSocialNewsDocument().getParsedNewsList();
 		List<News> newsList = newsModelConvertAdapter.convertToNewsListForDB(parsedNewsList);
+		
 		if(newsList.size() > 0)
 			localInsertNewsDAO.insertNews(newsList);
 	}

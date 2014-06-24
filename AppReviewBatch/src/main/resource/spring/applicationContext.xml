@@ -17,7 +17,7 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mysql://10.5.208.36:3306/front_db"></property>
+		<property name="url" value="jdbc:mysql://10.5.20.60:3306/front_db"></property>
 		<property name="username" value="@username@"></property>
 		<property name="password" value="@password@"></property>
 		<property name="removeAbandoned" value="true"></property>
@@ -41,7 +41,7 @@
 			value="kr.co.tmon.batch.appreview.model.AppReviewModel, 
 		kr.co.tmon.batch.appreview.model.MonthlyAppRatingModel, 
 		kr.co.tmon.batch.appreview.model.NumberOfAppReviewModel, 
-		kr.co.tmon.batch.appreview.model.RatingOfAppByVersionModel, kr.co.tmon.batch.appreview.model.RatingOfAppModel"></property>
+		kr.co.tmon.batch.appreview.model.RatingOfAppByVersionModel, kr.co.tmon.batch.appreview.model.RatingOfAppModel, kr.co.tmon.batch.appreview.model.AppRankingModel"></property>
 		<property name="typeAliasesPackage" value="kr.co.tmon.batch.appreview.model"></property>
 	</bean>
 
@@ -65,7 +65,14 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 	<bean id="ratingOfAppMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property value="kr.co.tmon.batch.appreview.dao.RatingOfAppMapper" name="mapperInterface"/>
+		<property value="kr.co.tmon.batch.appreview.dao.RatingOfAppMapper"
+			name="mapperInterface" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="appRankingMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property value="kr.co.tmon.batch.appreview.dao.AppRankingMapper"
+			name="mapperInterface" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class RemoteGetNewsDAO {
-	private static final String BASIC_URL_FOR_GETTING_XML = "http://10.5.220.118:8080/social/news.tmon?date=";
+	private static final String BASIC_URL_FOR_GETTING_XML = "http://10.5.208.50:8080/social/news.tmon?date=";
 	
 	public SocialNewsDocument getSocialNewsDocument() throws MalformedURLException, JAXBException {
 		URL url = new URL(generateTodayUrl());

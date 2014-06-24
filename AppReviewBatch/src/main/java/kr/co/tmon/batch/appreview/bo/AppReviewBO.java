@@ -32,8 +32,11 @@ public class AppReviewBO {
 
 	private void reviewInsertion(List<AppReviewModel> lastestReviewData) {
 		if (lastestReviewData.size() > 0) {
-			for (AppReviewModel review : lastestReviewData)
+			for (AppReviewModel review : lastestReviewData) {
+				if (review.getReviewerLink() == null)
+					review.setReviewerLink("");
 				appReviewDAO.insertAppReview(review);
+			}
 		}
 	}
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.tmon.batch.appreview.dao.AppRankingMapper">
+	<resultMap type="AppRankingModel" id="AppRankingResult">
+		<result property="dateString" column="date" />
+		<result property="tmonRank" column="tmon_rank" />
+		<result property="coupangRank" column="coupang_rank" />
+		<result property="wemapRank" column="wemap_rank" />
+	</resultMap>
+	
+	<insert id="insertAppRanking" parameterType="AppRankingModel">
+		INSERT INTO
+			ranking(date, tmon_rank, coupang_rank, wemap_rank)
+		SELECT
+			#{dateString}, #{tmonRank}, #{coupangRank}, #{wemapRank}
+		FROM DUAL
+ 		 	WHERE
+ 		 		NOT EXISTS
+ 		 			(SELECT date FROM ranking WHERE date=#{dateString})
+	</insert>
+</mapper>

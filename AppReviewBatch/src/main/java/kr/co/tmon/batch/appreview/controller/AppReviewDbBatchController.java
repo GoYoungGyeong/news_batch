@@ -3,6 +3,7 @@ package kr.co.tmon.batch.appreview.controller;
 import java.io.IOException;
 import java.text.ParseException;
 
+import kr.co.tmon.batch.appreview.bo.AppRankingBO;
 import kr.co.tmon.batch.appreview.bo.AppReviewBO;
 import kr.co.tmon.batch.appreview.bo.MonthlyAppRatingBO;
 import kr.co.tmon.batch.appreview.bo.RatingOfAppBO;
@@ -28,14 +29,18 @@ public class AppReviewDbBatchController {
 	private MonthlyAppRatingBO monthlyAppRatingBO;
 
 	@Autowired
+	private AppRankingBO appRankingBO;
+
+	@Autowired
 	private RatingOfAppBO ratingOfAppBO;
-	
+
 	public void runAppReviewDbUpdateBatch() throws IOException, org.json.simple.parser.ParseException, ParseException {
 		appReviewBO.insertLastestReview();
 		ratingOfAppVersionBO.insertAppRatingData();
 		monthlyAppRatingBO.insertCurrentMonthAppRating();
 		ratingOfAppBO.updateRatingOfApp();
-		
+		appRankingBO.insertAppRanking();
+
 	}
 
 }

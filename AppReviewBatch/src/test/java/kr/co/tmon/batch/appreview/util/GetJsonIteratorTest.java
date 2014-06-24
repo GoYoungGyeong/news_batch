@@ -18,6 +18,6 @@ public class GetJsonIteratorTest {
 
 	@Test
 	public void 이터레이터를_정상적으로_반환하는지_확인하는_테스트() throws IOException, ParseException {
-		assertNotNull(getJsonIterator.getReviewArrayIterator("http://10.5.220.118:8080/social/appReview.tmon", "reviewList"));
+		assertNotNull(getJsonIterator.getReviewArrayIterator("http://10.5.208.50:8080/social/appReview.tmon", "reviewList"));
 	}
 }
