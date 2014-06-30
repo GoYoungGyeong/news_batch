@@ -1,6 +1,7 @@
 package kr.co.tmon.batch.appreview.util;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -39,5 +40,13 @@ public class ExtractFromJsonTest {
 	public void 앱_순위를_정상적으로_받아오는지_테스트() throws IOException, ParseException {
 		AppRankingModel result = extractAppReviewListFromJson.getAppRanking();
 		assertNotNull(result);
+	}
+
+	@Test
+	public void 한글자_문자를_0을_붙여서_두글자로_반환하는지_테스트() {
+		int testValue = 1;
+		String result = extractAppReviewListFromJson.convertDualCharacter(testValue);
+
+		assertTrue(result.compareTo("01") == 0);
 	}
 }

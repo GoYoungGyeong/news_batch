@@ -20,7 +20,7 @@ import org.json.simple.parser.ParseException;
  */
 
 public class ExtractFromJson {
-	private static String APP_REVIEW_URL = "http://10.5.208.50:8080/social/appReview.tmon";
+	private static String APP_REVIEW_URL = "http://10.5.20.123:8080//social/appReview.tmon";
 	private static final String APP_NAME_OF_TMON = "티몬";
 	private static final String APP_NAME_OF_TMONPLUS = "티몬플러스";
 	private static final String APP_NAME_OF_WEMAP = "위메프";
@@ -97,14 +97,23 @@ public class ExtractFromJson {
 
 		stringBuilder.append(date.getYear() + 1900);
 		stringBuilder.append("-");
-		stringBuilder.append(date.getMonth());
+		stringBuilder.append(convertDualCharacter(date.getMonth() + 1));
 		stringBuilder.append("-");
-		stringBuilder.append(date.getDate());
+		stringBuilder.append(convertDualCharacter(date.getDate()));
 		stringBuilder.append(", ");
-		stringBuilder.append(date.getHours());
+		stringBuilder.append(convertDualCharacter(date.getHours()));
 		stringBuilder.append(":00");
 
 		return stringBuilder.toString();
+	}
+
+	public String convertDualCharacter(int integerValue) {
+		String convertedValue = Integer.toString(integerValue);
+
+		if (convertedValue.length() == 1)
+			convertedValue = "0".concat(convertedValue);
+
+		return convertedValue;
 	}
 
 	private void getAppRanking(AppRankingModel appRanking, JSONObject jsonObject) {
